@@ -3,6 +3,7 @@ from typing import List
 
 HYPEN_E_DOT="-e."
 
+# Function to Parse Requirements File
 def get_requirements(file_path:str)->List[str]:
     '''
     This function will return the list of requirements

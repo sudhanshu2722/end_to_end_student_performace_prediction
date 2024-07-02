@@ -7,8 +7,11 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 
+from srs.components.data_transformation import DataTransformation
+from srs.components.data_transformation import DataTransformationConfig
 @dataclass
 class DataIngestionConfig:
+    #defines the file paths for the training data, test data, and raw data.
     train_data_path: str = os.path.join('artifact',"train.xls")
     test_data_path: str = os.path.join('artifact',"test.xls")
     raw_data_path: str = os.path.join('artifact',"data.xls")
@@ -25,13 +28,15 @@ class DataIngestion:
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
 
+            # Saving raw data
             df.to_csv(self.ingestion_config.raw_data_path,index=False,header=True)
 
             logging.info("Train Test split initiated")
             train_set,test_set=train_test_split(df,test_size=0.2,random_state=42)
 
+            # Saving training data
             train_set.to_csv(self.ingestion_config.train_data_path,index=False,header=True)
-
+            # Saving testing data
             test_set.to_csv(self.ingestion_config.test_data_path,index=False,header=True)
 
             logging.info("Ingestion of the data is completed")
@@ -45,4 +50,7 @@ class DataIngestion:
 
 if __name__=="__main__":
     obj = DataIngestion()
-    obj.initiate_data_ingestion()
+    train_data,test_data = obj.initiate_data_ingestion()
+
+    data_transformation = DataTransformation()
+    data_transformation.initiate_data_transformation(train_data,test_data)
